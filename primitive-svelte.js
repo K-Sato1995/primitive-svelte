@@ -4,6 +4,10 @@ import * as fs from 'fs';
 const template = `
 <h1>hello {{name}}!</h1>
 <h1>This is written by {{author}}!</h>
+
+<script>
+console.log("Hello")
+</script>
 `;
 
 const { code } = svelteCompiler.compile(template)

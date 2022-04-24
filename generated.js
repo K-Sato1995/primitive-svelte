@@ -1,3 +1,51 @@
+function renderMainFragment ( component, target ) {
+	var h1 = document.createElement( 'h1' );
+	
+	h1.appendChild( document.createTextNode( "hello " ) );
+	
+	var text = document.createTextNode( '' );
+	var text_value = '';
+	h1.appendChild( text );
+	
+	h1.appendChild( document.createTextNode( "!" ) );
+	
+	target.appendChild( h1 );
+	
+	target.appendChild( document.createTextNode( "\n" ) );
+	
+	var h11 = document.createElement( 'h1' );
+	
+	h11.appendChild( document.createTextNode( "This is written by " ) );
+	
+	var text1 = document.createTextNode( '' );
+	var text1_value = '';
+	h11.appendChild( text1 );
+	
+	h11.appendChild( document.createTextNode( "!" ) );
+	
+	target.appendChild( h11 );
+
+	return {
+		update: function ( root ) {
+			if ( root.name !== text_value ) {
+				text_value = root.name;
+				text.data = text_value;
+			}
+			
+			if ( root.author !== text1_value ) {
+				text1_value = root.author;
+				text1.data = text1_value;
+			}
+		},
+
+		teardown: function () {
+			h1.parentNode.removeChild( h1 );
+			
+			h11.parentNode.removeChild( h11 );
+		}
+	};
+}
+
 export default function createComponent ( options ) {
 	var component = {};
 	var state = {};
@@ -7,10 +55,11 @@ export default function createComponent ( options ) {
 		deferred: Object.create( null )
 	};
 
-	// universal methods
-	function dispatchObservers ( group, state, oldState ) {
+	function dispatchObservers ( group, newState, oldState ) {
 		for ( const key in group ) {
-			const newValue = state[ key ];
+			if ( !( key in newState ) ) continue;
+
+			const newValue = newState[ key ];
 			const oldValue = oldState[ key ];
 
 			if ( newValue === oldValue && typeof newValue !== 'object' ) continue;
@@ -31,14 +80,10 @@ export default function createComponent ( options ) {
 	component.set = function set ( newState ) {
 		const oldState = state;
 		state = Object.assign( {}, oldState, newState );
-
-		if ( state.name !== oldState.name ) {
-			text_0.data = state.name;
-		}
 		
-		if ( state.author !== oldState.author ) {
-			text_1.data = state.author;
-		}
+		dispatchObservers( observers.immediate, newState, oldState );
+		mainFragment.update( state );
+		dispatchObservers( observers.deferred, newState, oldState );
 	};
 
 	component.observe = function ( key, callback, options = {} ) {
@@ -56,33 +101,18 @@ export default function createComponent ( options ) {
 	};
 
 	component.teardown = function teardown () {
-		element_0.parentNode.removeChild( element_0 );
-		
-		element_1.parentNode.removeChild( element_1 );
+		mainFragment.teardown();
+		mainFragment = null;
+
 		state = {};
+
+		
 	};
 
-	var element_0 = document.createElement( 'h1' );
-	options.target.appendChild( element_0 );
-	
-	element_0.appendChild( document.createTextNode( "hello " ) );
-	
-	var text_0 = document.createTextNode( '' );
-	element_0.appendChild( text_0 );
-	
-	element_0.appendChild( document.createTextNode( "!" ) );
-	
-	var element_1 = document.createElement( 'h1' );
-	options.target.appendChild( element_1 );
-	
-	element_1.appendChild( document.createTextNode( "This is written by " ) );
-	
-	var text_1 = document.createTextNode( '' );
-	element_1.appendChild( text_1 );
-	
-	element_1.appendChild( document.createTextNode( "!" ) );
-
+	let mainFragment = renderMainFragment( component, options.target );
 	component.set( options.data );
+
+	
 
 	return component;
 }
