@@ -53,25 +53,18 @@ export default function createComponent ( options ) {
 
 	component.teardown = function teardown () {
 		element_0.parentNode.removeChild( element_0 );
-		
-		element_1.parentNode.removeChild( element_1 );
 		state = {};
 	};
 
-	var element_0 = document.createElement( 'script' );
+	var element_0 = document.createElement( 'h1' );
 	options.target.appendChild( element_0 );
 	
-	element_0.appendChild( document.createTextNode( "const name = \"world\";\n" ) );
-	
-	var element_1 = document.createElement( 'h1' );
-	options.target.appendChild( element_1 );
-	
-	element_1.appendChild( document.createTextNode( "hello " ) );
+	element_0.appendChild( document.createTextNode( "hello " ) );
 	
 	var text_0 = document.createTextNode( '' );
-	element_1.appendChild( text_0 );
+	element_0.appendChild( text_0 );
 	
-	element_1.appendChild( document.createTextNode( "!" ) );
+	element_0.appendChild( document.createTextNode( "!" ) );
 
 	component.set( options.data );
 
