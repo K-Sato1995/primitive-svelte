@@ -35,6 +35,10 @@ export default function createComponent ( options ) {
 		if ( state.name !== oldState.name ) {
 			text_0.data = state.name;
 		}
+		
+		if ( state.author !== oldState.author ) {
+			text_1.data = state.author;
+		}
 	};
 
 	component.observe = function ( key, callback, options = {} ) {
@@ -53,6 +57,8 @@ export default function createComponent ( options ) {
 
 	component.teardown = function teardown () {
 		element_0.parentNode.removeChild( element_0 );
+		
+		element_1.parentNode.removeChild( element_1 );
 		state = {};
 	};
 
@@ -65,6 +71,16 @@ export default function createComponent ( options ) {
 	element_0.appendChild( text_0 );
 	
 	element_0.appendChild( document.createTextNode( "!" ) );
+	
+	var element_1 = document.createElement( 'h1' );
+	options.target.appendChild( element_1 );
+	
+	element_1.appendChild( document.createTextNode( "This is written by " ) );
+	
+	var text_1 = document.createTextNode( '' );
+	element_1.appendChild( text_1 );
+	
+	element_1.appendChild( document.createTextNode( "!" ) );
 
 	component.set( options.data );
 

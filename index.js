@@ -1,8 +1,12 @@
 import createComponent from "./generated.js";
 
-createComponent({
+const component = createComponent({
 	target: document.querySelector('body'),
-	data: {
-		name: 'world'
-	}
 });
+
+component.set({
+	name: 'Mundo',
+  author: "K-Sato"
+});
+
+
