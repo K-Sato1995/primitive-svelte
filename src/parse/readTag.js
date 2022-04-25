@@ -5,9 +5,6 @@ const readTag = (parser) => {
     const start = parser.index++
 	const isClosingTag = parser.eat( '/' );
 
-
-
-    console.log(isClosingTag)
     const tagName = readTagName(parser)
 }
 

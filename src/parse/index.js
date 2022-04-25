@@ -2,7 +2,7 @@ import readTag from './readTag.js'
 
 class Parser {
     constructor(template) {
-        this.stack = []
+        this.stack = [] // Array of nodes
         this.template = template
         this.idx = 0
     }
@@ -39,10 +39,38 @@ class Parser {
     }
 
     getCurr = () => {
-        const len = stack.length
-        return stack[len - 1]
+        const len = this.stack.length
+        return this.stack[len - 1]
     }
 
+
+    readText = () => {
+        const start = this.idx
+
+        let data = ''
+
+        // Read data besides < or {{
+        while(this.idx < this.template.length && !this.match('<') && !this.match('{{')) {
+            data += this.template[this.idx++]
+        }
+
+        const node = this.getCurr()
+
+        node.children.push({
+            start, 
+            end: this.idx,
+            type: 'text',
+            data
+        })
+    }
+
+    // Mock readTag and readMustache
+    t = () => {
+        this.idx++
+    }
+    m = () => {
+        this.idx++
+    }
 
     // just traverse the template
     traverseTemplate = () => {
@@ -65,13 +93,33 @@ const parse = (template) => {
         },
         js: null
     }
-    parser.stack.push(ast.html);
+    parser.stack.push(ast.html)
+
+    // fragment = tag || mustach || text
+	let state = fragment;
 
 
-    parser.traverseTemplate()
-
-
-    readTag(parser)
+    // Run readTag, readMustache or readText(each of them adds num to inx)
+    while (parser.idx < parser.template.length ) {
+    	state = state(parser) || fragment;
+	};
 }
+
+const fragment = (parser) => {
+	if ( parser.match( '<' ) ) {
+		// return readTag;
+        return parser.t
+	}
+
+	if ( parser.match( '{{' ) ) {
+		// return mustache;
+        return parser.m
+	}
+
+	return parser.readText;
+}
+
+
+
 export default parse
 
