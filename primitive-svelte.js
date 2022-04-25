@@ -6,7 +6,12 @@ const template = `
 <h1>This is written by {{author}}!</h>
 
 <script>
-console.log("Hello")
+console.log("Hello World")
+export default {
+  data: () => ({
+    name: 'world'
+  })
+};
 </script>
 `;
 

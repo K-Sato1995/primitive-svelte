@@ -5,7 +5,6 @@ const component = createComponent({
 });
 
 component.set({
-	name: 'Mundo',
   author: "K-Sato"
 });
 

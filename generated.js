@@ -1,3 +1,11 @@
+
+console.log("Hello World")
+const template = {
+  data: () => ({
+    name: 'world'
+  })
+};
+
 function renderMainFragment ( component, target ) {
 	var h1 = document.createElement( 'h1' );
 	
@@ -110,7 +118,7 @@ export default function createComponent ( options ) {
 	};
 
 	let mainFragment = renderMainFragment( component, options.target );
-	component.set( options.data );
+	component.set( Object.assign( template.data(), options.data ) );
 
 	
 
