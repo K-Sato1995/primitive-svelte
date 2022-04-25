@@ -20,7 +20,7 @@ const compile = (template) => {
 const template = `
 <h1>hello {{name}}!</h1>
 <h1>This is written by {{author}}!</h>
-<input bind:value="name"/>
+<input bind:value="name"></input>
 
 <script>
 console.log("Hello World")

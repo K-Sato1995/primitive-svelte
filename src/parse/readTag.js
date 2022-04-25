@@ -1,5 +1,6 @@
 import { trimStart, trimEnd } from '../utils/index.js';
 const validTagName = /^[a-zA-Z]{1,}:?[a-zA-Z0-9\-]*/;
+const voidElementNames = /^(?:area|base|br|col|command|doctype|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)$/i;
 
 // const specialTags = {
 // 	script: {
@@ -43,7 +44,7 @@ const readTag = (parser) => {
     }
 
     ele.end = parser.idx;
-    parser.stack.pop();
+    // parser.stack.pop();
     return null;
   }
 
@@ -51,12 +52,35 @@ const readTag = (parser) => {
   let attribute;
 
   while ((attribute = readAttribute(parser))) {
-    console.log(attribute);
     attributes.push(attribute);
     parser.allowWhitespace();
   }
 
+  parser.allowWhitespace();
+
+  const element = {
+    start,
+    end: null,
+    type: 'Element',
+    tagName,
+    attributes,
+    children: [],
+  };
+
+  parser.getCurr().children.push(element);
+
+  const selfClosing = parser.eat('/') || voidElementNames.test(tagName);
+
   // const value = parser.eat( '=' ) ? readAttributeValue( parser ) : true;
+  parser.eat('>');
+
+  if (selfClosing) {
+    element.end = parser.idx;
+  } else {
+    parser.stack.push(element);
+  }
+
+  return null;
 };
 
 const readTagName = (parser) => {

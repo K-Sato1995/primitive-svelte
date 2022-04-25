@@ -24,9 +24,9 @@ class Parser {
   // Read the matched pattern
   read = (pattern) => {
     const match = pattern.exec(this.template.slice(this.idx));
-    if (!match || match.idx !== 0) return null;
+    if (!match || match.index !== 0) return null;
 
-    idx += match[0].length;
+    this.idx += match[0].length;
     return match[0];
   };
 
