@@ -1,3 +1,4 @@
+import { trimStart, trimEnd } from "../utils/index.js";
 const validTagName = /^[a-zA-Z]{1,}:?[a-zA-Z0-9\-]*/;
 
 
@@ -22,9 +23,30 @@ const readTag = (parser) => {
 
     parser.allowWhitespace()
 
+
+    // Todo: read and comment on it
     if(isClosingTag) {
 		if (!parser.eat( '>' )) throw new Error( `Expected '>'` );
 		const ele = parser.getCurr();
+
+        if(ele.children.length) {
+            const firstChild = ele.children[0];
+			const lastChild = ele.children[ele.children.length - 1];
+
+			if ( firstChild.type === 'Text' ) {
+				firstChild.data = trimStart( firstChild.data );
+				if ( !firstChild.data ) ele.children.shift();
+			}
+
+			if ( lastChild.type === 'Text' ) {
+				lastChild.data = trimEnd( lastChild.data );
+				if ( !lastChild.data ) ele.children.pop();
+			}
+        }
+
+        ele.end = parser.idx;
+		parser.stack.pop();
+		return null;
     }
 
 	const attributes = [];
@@ -87,7 +109,6 @@ const readBind = (parser, start, name) => {
 
 	const value = parser.read( /([a-zA-Z_$][a-zA-Z0-9_$]*)(\.[a-zA-Z_$][a-zA-Z0-9_$]*)*/ );
 
-    console.log("value", value)
     if (!value) throw new Error(`Expected valid property name`);
     
 
