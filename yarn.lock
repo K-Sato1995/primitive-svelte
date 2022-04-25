@@ -2,9 +2,16 @@
 # yarn lockfile v1
 
 
+"acorn@^8.7.0":
+  "integrity" "sha512-V/LGr1APy+PXIwKebEWrkZPwoeoF+w1jiOBUmuxuiUIaOHtob8Qc9BTrYo7VuI5fR8tqsy+buA2WFooR5olqvQ=="
+  "resolved" "https://registry.npmjs.org/acorn/-/acorn-8.7.0.tgz"
+  "version" "8.7.0"
+
 "svelte@file:../svelte":
   "resolved" "file:../svelte"
-  "version" "0.0.1"
+  "version" "0.0.2"
   dependencies:
     "acorn" "^4.0.3"
+    "estree-walker" "^0.3.0"
     "locate-character" "^2.0.0"
+    "magic-string" "^0.16.0"

@@ -21,9 +21,9 @@ class Parser {
         return false
     }
     
-    // 
+    // Read the matched pattern
     read = (pattern) => {
-        const match = pattern.exec(template.slice(this.idx))
+        const match = pattern.exec(this.template.slice(this.idx))
         if(!match || match.idx !== 0) return null
     
         idx += match[0].length
@@ -65,11 +65,14 @@ class Parser {
     }
 
     // Mock readTag and readMustache
-    t = () => {
-        this.idx++
-    }
     m = () => {
         this.idx++
+    }
+
+    allowWhitespace () {
+        while ( this.idx < this.template.length && /\s/.test(this.template[this.idx])) {
+            this.idx++;
+        }
     }
 
     // just traverse the template
@@ -108,7 +111,7 @@ const parse = (template) => {
 const fragment = (parser) => {
 	if ( parser.match( '<' ) ) {
 		// return readTag;
-        return parser.t
+        return readTag(parser)
 	}
 
 	if ( parser.match( '{{' ) ) {

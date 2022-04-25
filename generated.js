@@ -36,6 +36,21 @@ function renderMainFragment ( component, target ) {
 	h11.appendChild( document.createTextNode( "!" ) );
 	
 	target.appendChild( h11 );
+	
+	target.appendChild( document.createTextNode( "\n" ) );
+	
+	var input = document.createElement( 'input' );
+	var input_updating = false;
+	
+	function inputChangeHandler () {
+		input_updating = true;
+		component.set({ name: input.value });
+		input_updating = false;
+	}
+	
+	input.addEventListener( 'input', inputChangeHandler, false );
+	
+	target.appendChild( input );
 
 	return {
 		update: function ( root ) {
@@ -48,12 +63,17 @@ function renderMainFragment ( component, target ) {
 				text1_value = root.author;
 				text1.data = text1_value;
 			}
+			
+			if ( !input_updating ) input.value = root.name
 		},
 
 		teardown: function () {
 			h1.parentNode.removeChild( h1 );
 			
 			h11.parentNode.removeChild( h11 );
+			
+			input.removeEventListener( 'input', inputChangeHandler, false );
+			input.parentNode.removeChild( input );
 		}
 	};
 }

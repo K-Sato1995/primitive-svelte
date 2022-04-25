@@ -2,6 +2,7 @@
 Todos
 - Can insert var in markdown
 - Can parse script tag
+- data bind
 */
 
 import parse from './parse/index.js'
@@ -20,19 +21,16 @@ const compile = (template) => {
 const template = `
 <h1>hello {{name}}!</h1>
 <h1>This is written by {{author}}!</h>
+<input bind:value="name"/>
 
 <script>
 console.log("Hello World")
 
-const hello = () => {
-  console.log("ONCLICK")
-}
 export default {
   data: () => ({
     name: 'world'
   })
 };
-</script>
-`;
+</script>`;
 
 compile(template)
