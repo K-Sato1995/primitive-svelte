@@ -1,4 +1,4 @@
-import * as svelteCompiler from'svelte/compiler/index.js'
+import * as svelteCompiler from 'svelte/compiler/index.js';
 import * as fs from 'fs';
 
 const template = `
@@ -20,14 +20,12 @@ export default {
 </script>
 `;
 
-const { code } = svelteCompiler.compile(template)
+const { code } = svelteCompiler.compile(template);
 
-
-fs.writeFile('./generated.js', code, err => {
-    if (err) {
-      console.error(err)
-      return
-    }
-    //file written successfully
-  })
-  
+fs.writeFile('./generated.js', code, (err) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  //file written successfully
+});

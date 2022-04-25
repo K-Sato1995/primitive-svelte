@@ -1,11 +1,9 @@
-import createComponent from "./generated.js";
+import createComponent from './generated.js';
 
 const component = createComponent({
-	target: document.querySelector('body'),
+  target: document.querySelector('body'),
 });
 
 component.set({
-  author: "K-Sato"
+  author: 'K-Sato',
 });
-
-
