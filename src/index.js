@@ -15,7 +15,6 @@ const compile = (template) => {
     return code
     */
   const ast = parse(template)
-  console.log(ast.html)
 }
 
 const template = `

@@ -48,14 +48,14 @@ const readTag = (parser) => {
 
   parser.allowWhitespace()
 
-  if (tagName === "script") {
+  if (tagName === 'script') {
     parser.eat('>')
     parser.ast.js = readScript(parser, start, attributes)
     return
   }
 
-  if(tagName === "style") {
-      throw new Error("Huh? What's style??")
+  if (tagName === 'style') {
+    throw new Error("Huh? What's style??")
   }
 
   const element = {

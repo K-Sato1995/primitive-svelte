@@ -1,5 +1,6 @@
 import readTag from './readTag.js'
 import readMustache from './readMustache.js'
+import { trimStart, trimEnd } from '../utils/index.js'
 
 class Parser {
   constructor(template) {
@@ -7,13 +8,13 @@ class Parser {
     this.template = template
     this.idx = 0
     this.ast = {
-        html: {
-			start: null,
-			end: null,
-			type: 'Fragment',
-			children: []
-		},
-        js: null
+      html: {
+        start: null,
+        end: null,
+        type: 'Fragment',
+        children: [],
+      },
+      js: null,
     }
   }
 
@@ -72,7 +73,6 @@ class Parser {
 
     const node = this.getCurr()
 
-    console.log(node)
     node.children.push({
       start,
       end: this.idx,
@@ -114,6 +114,42 @@ const parse = (template) => {
   while (parser.idx < parser.template.length) {
     state = state(parser) || fragment
   }
+
+
+//  // Trim white space
+//   while (parser.ast.html.children.length) {
+//     const firstChild = parser.ast.html.children[0]
+//     parser.ast.html.start = firstChild.start
+
+//     if (firstChild.type !== 'Text') break
+
+//     const length = firstChild.data.length
+//     firstChild.data = trimStart(firstChild.data)
+
+//     if (firstChild.data === '') {
+//       parser.ast.html.children.shift()
+//     } else {
+//       parser.ast.html.start += length - firstChild.data.length
+//       break
+//     }
+//   }
+
+//   while (parser.ast.html.children.length) {
+//     const lastChild = parser.ast.html.children[parser.ast.html.children.length - 1]
+//     parser.ast.html.end = lastChild.end
+
+//     if (lastChild.type !== 'Text') break
+
+//     const length = lastChild.data.length
+//     lastChild.data = trimEnd(lastChild.data)
+
+//     if (lastChild.data === '') {
+//       parser.ast.html.children.pop()
+//     } else {
+//       parser.ast.html.end -= length - lastChild.data.length
+//       break
+//     }
+//   }
 
   return parser.ast
 }
