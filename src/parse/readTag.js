@@ -1,8 +1,8 @@
-import { trimStart, trimEnd } from '../utils/index.js';
-import readScript from './readScript.js';
-const validTagName = /^[a-zA-Z]{1,}:?[a-zA-Z0-9\-]*/;
+import { trimStart, trimEnd } from '../utils/index.js'
+import readScript from './readScript.js'
+const validTagName = /^[a-zA-Z]{1,}:?[a-zA-Z0-9\-]*/
 const voidElementNames =
-  /^(?:area|base|br|col|command|doctype|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)$/i;
+  /^(?:area|base|br|col|command|doctype|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)$/i
 
 const specialTags = {
   script: {
@@ -12,67 +12,67 @@ const specialTags = {
 
   style: {
     read: () => {
-      throw new Error('Style tag is not supported');
+      throw new Error('Style tag is not supported')
     },
     property: 'css',
   },
-};
+}
 
 const readTag = (parser) => {
   // From one letter after the corrent position
-  const start = parser.idx++;
-  const isClosingTag = parser.eat('/');
+  const start = parser.idx++
+  const isClosingTag = parser.eat('/')
 
-  const tagName = readTagName(parser);
+  const tagName = readTagName(parser)
 
-  parser.allowWhitespace();
+  parser.allowWhitespace()
 
   // Todo: read and comment on it
   if (isClosingTag) {
-    if (!parser.eat('>')) throw new Error(`Expected '>'`);
-    const ele = parser.getCurr();
+    if (!parser.eat('>')) throw new Error(`Expected '>'`)
+    const ele = parser.getCurr()
 
     if (ele.children.length) {
-      const firstChild = ele.children[0];
-      const lastChild = ele.children[ele.children.length - 1];
+      const firstChild = ele.children[0]
+      const lastChild = ele.children[ele.children.length - 1]
 
       if (firstChild.type === 'Text') {
-        firstChild.data = trimStart(firstChild.data);
-        if (!firstChild.data) ele.children.shift();
+        firstChild.data = trimStart(firstChild.data)
+        if (!firstChild.data) ele.children.shift()
       }
 
       if (lastChild.type === 'Text') {
-        lastChild.data = trimEnd(lastChild.data);
-        if (!lastChild.data) ele.children.pop();
+        lastChild.data = trimEnd(lastChild.data)
+        if (!lastChild.data) ele.children.pop()
       }
     }
 
-    ele.end = parser.idx;
+    ele.end = parser.idx
     // parser.stack.pop();
-    return null;
+    return null
   }
 
-  const attributes = [];
-  let attribute;
+  const attributes = []
+  let attribute
 
   while ((attribute = readAttribute(parser))) {
-    attributes.push(attribute);
-    parser.allowWhitespace();
+    attributes.push(attribute)
+    parser.allowWhitespace()
   }
 
-  parser.allowWhitespace();
+  parser.allowWhitespace()
 
   if (tagName in specialTags) {
-    const special = specialTags[tagName];
+    const special = specialTags[tagName]
 
     if (parser[special.id]) {
-      parser.idx = start;
-      throw new Error(`You can only have one <${tagName}> tag per component`);
+      parser.idx = start
+      throw new Error(`You can only have one <${tagName}> tag per component`)
     }
 
-    parser.eat('>');
-    parser[special.property] = special.read(parser, start, attributes);
-    return;
+    parser.eat('>')
+    parser[special.property] = special.read(parser, start, attributes)
+    return
   }
 
   const element = {
@@ -82,67 +82,67 @@ const readTag = (parser) => {
     tagName,
     attributes,
     children: [],
-  };
+  }
 
-  parser.getCurr().children.push(element);
+  parser.getCurr().children.push(element)
 
-  const selfClosing = parser.eat('/') || voidElementNames.test(tagName);
+  const selfClosing = parser.eat('/') || voidElementNames.test(tagName)
 
-  parser.eat('>');
+  parser.eat('>')
 
   if (selfClosing) {
-    element.end = parser.idx;
+    element.end = parser.idx
   } else {
-    parser.stack.push(element);
+    parser.stack.push(element)
   }
 
-  return null;
-};
+  return null
+}
 
 const readTagName = (parser) => {
-  const start = parser.idx;
-  const name = parser.readUntil(/(\s|\/|>)/);
+  const start = parser.idx
+  const name = parser.readUntil(/(\s|\/|>)/)
 
   if (!validTagName.test(name)) {
-    throw new Error(`Expected valid tag name`, start);
+    throw new Error(`Expected valid tag name`, start)
   }
 
-  return name;
-};
+  return name
+}
 
 const readAttribute = (parser) => {
-  const start = parser.idx;
+  const start = parser.idx
 
   // read till the end of the tag
-  const name = parser.readUntil(/(\s|=|\/|>)/);
+  const name = parser.readUntil(/(\s|=|\/|>)/)
 
   // return if there is no attribute
-  if (!name) return null;
+  if (!name) return null
 
-  parser.allowWhitespace();
+  parser.allowWhitespace()
 
   // Todo: handleEventHandler
   if (/^bind:/.test(name)) {
     // trim "="
-    parser.eat('=');
+    parser.eat('=')
     // name.slice(5) = value
-    return readBind(parser, start, name.slice(5));
+    return readBind(parser, start, name.slice(5))
   }
 
-  throw new Error(`Expected valid property name`);
-};
+  throw new Error(`Expected valid property name`)
+}
 
 const readBind = (parser, start, name) => {
-  const quoteMark = parser.eat(`'`) ? `'` : parser.eat(`"`) ? `"` : null;
+  const quoteMark = parser.eat(`'`) ? `'` : parser.eat(`"`) ? `"` : null
 
   const value = parser.read(
     /([a-zA-Z_$][a-zA-Z0-9_$]*)(\.[a-zA-Z_$][a-zA-Z0-9_$]*)*/,
-  );
+  )
 
-  if (!value) throw new Error(`Expected valid property name`);
+  if (!value) throw new Error(`Expected valid property name`)
 
   if (quoteMark) {
-    parser.eat(quoteMark);
+    parser.eat(quoteMark)
   }
 
   return {
@@ -151,7 +151,7 @@ const readBind = (parser, start, name) => {
     type: 'Binding',
     name,
     value,
-  };
-};
+  }
+}
 
-export default readTag;
+export default readTag

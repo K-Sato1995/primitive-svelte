@@ -5,7 +5,7 @@ Todos
 - data bind
 */
 
-import parse from './parse/index.js';
+import parse from './parse/index.js'
 
 const compile = (template) => {
   /*
@@ -14,8 +14,8 @@ const compile = (template) => {
 
     return code
     */
-  const ast = parse(template);
-};
+  const ast = parse(template)
+}
 
 const template = `
 <h1>hello {{name}}!</h1>
@@ -30,6 +30,6 @@ export default {
     name: 'world'
   })
 };
-</script>`;
+</script>`
 
-compile(template);
+compile(template)
