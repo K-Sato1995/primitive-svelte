@@ -72,6 +72,7 @@ class Parser {
 
     const node = this.getCurr()
 
+    console.log(node)
     node.children.push({
       start,
       end: this.idx,
