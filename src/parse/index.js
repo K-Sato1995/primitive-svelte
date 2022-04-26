@@ -6,6 +6,15 @@ class Parser {
     this.stack = [] // Array of nodes
     this.template = template
     this.idx = 0
+    this.ast = {
+        html: {
+			start: null,
+			end: null,
+			type: 'Fragment',
+			children: []
+		},
+        js: null
+    }
   }
 
   // check if it matches the val of template
@@ -71,11 +80,6 @@ class Parser {
     })
   }
 
-  // Mock readTag and readMustache
-  m = () => {
-    this.idx++
-  }
-
   remaining = () => {
     return this.template.slice(this.idx)
   }
@@ -100,16 +104,7 @@ class Parser {
 
 const parse = (template) => {
   const parser = new Parser(template)
-  const ast = {
-    html: {
-      start: null,
-      end: null,
-      type: 'Fragment',
-      children: [],
-    },
-    js: null,
-  }
-  parser.stack.push(ast.html)
+  parser.stack.push(parser.ast.html)
 
   // fragment = tag || mustach || text
   let state = fragment
@@ -118,6 +113,8 @@ const parse = (template) => {
   while (parser.idx < parser.template.length) {
     state = state(parser) || fragment
   }
+
+  return parser.ast
 }
 
 const fragment = (parser) => {

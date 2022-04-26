@@ -8,7 +8,6 @@ const readMustache = (parser) => {
 
   const expression = readExpression(parser)
 
-  console.log(expression)
   parser.eat('}}')
 
   parser.getCurr().children.push({

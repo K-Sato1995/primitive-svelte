@@ -4,20 +4,6 @@ const validTagName = /^[a-zA-Z]{1,}:?[a-zA-Z0-9\-]*/
 const voidElementNames =
   /^(?:area|base|br|col|command|doctype|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)$/i
 
-const specialTags = {
-  script: {
-    read: readScript,
-    property: 'js',
-  },
-
-  style: {
-    read: () => {
-      throw new Error('Style tag is not supported')
-    },
-    property: 'css',
-  },
-}
-
 const readTag = (parser) => {
   // From one letter after the corrent position
   const start = parser.idx++
@@ -62,17 +48,14 @@ const readTag = (parser) => {
 
   parser.allowWhitespace()
 
-  if (tagName in specialTags) {
-    const special = specialTags[tagName]
-
-    if (parser[special.id]) {
-      parser.idx = start
-      throw new Error(`You can only have one <${tagName}> tag per component`)
-    }
-
+  if (tagName === "script") {
     parser.eat('>')
-    parser[special.property] = special.read(parser, start, attributes)
+    parser.ast.js = readScript(parser, start, attributes)
     return
+  }
+
+  if(tagName === "style") {
+      throw new Error("Huh? What's style??")
   }
 
   const element = {

@@ -15,12 +15,13 @@ const compile = (template) => {
     return code
     */
   const ast = parse(template)
+  console.log(ast.html)
 }
 
 const template = `
 <h1>hello {{name}}!</h1>
 <h1>This is written by {{author}}!</h>
-<input bind:value="name"></input>
+<input bind:value="name"/>
 
 <script>
 console.log("Hello World")
