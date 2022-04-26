@@ -76,7 +76,7 @@ class Parser {
     node.children.push({
       start,
       end: this.idx,
-      type: 'text',
+      type: 'Text',
       data,
     })
   }
@@ -115,41 +115,40 @@ const parse = (template) => {
     state = state(parser) || fragment
   }
 
+  //  // Trim white space
+  //   while (parser.ast.html.children.length) {
+  //     const firstChild = parser.ast.html.children[0]
+  //     parser.ast.html.start = firstChild.start
 
-//  // Trim white space
-//   while (parser.ast.html.children.length) {
-//     const firstChild = parser.ast.html.children[0]
-//     parser.ast.html.start = firstChild.start
+  //     if (firstChild.type !== 'Text') break
 
-//     if (firstChild.type !== 'Text') break
+  //     const length = firstChild.data.length
+  //     firstChild.data = trimStart(firstChild.data)
 
-//     const length = firstChild.data.length
-//     firstChild.data = trimStart(firstChild.data)
+  //     if (firstChild.data === '') {
+  //       parser.ast.html.children.shift()
+  //     } else {
+  //       parser.ast.html.start += length - firstChild.data.length
+  //       break
+  //     }
+  //   }
 
-//     if (firstChild.data === '') {
-//       parser.ast.html.children.shift()
-//     } else {
-//       parser.ast.html.start += length - firstChild.data.length
-//       break
-//     }
-//   }
+  //   while (parser.ast.html.children.length) {
+  //     const lastChild = parser.ast.html.children[parser.ast.html.children.length - 1]
+  //     parser.ast.html.end = lastChild.end
 
-//   while (parser.ast.html.children.length) {
-//     const lastChild = parser.ast.html.children[parser.ast.html.children.length - 1]
-//     parser.ast.html.end = lastChild.end
+  //     if (lastChild.type !== 'Text') break
 
-//     if (lastChild.type !== 'Text') break
+  //     const length = lastChild.data.length
+  //     lastChild.data = trimEnd(lastChild.data)
 
-//     const length = lastChild.data.length
-//     lastChild.data = trimEnd(lastChild.data)
-
-//     if (lastChild.data === '') {
-//       parser.ast.html.children.pop()
-//     } else {
-//       parser.ast.html.end -= length - lastChild.data.length
-//       break
-//     }
-//   }
+  //     if (lastChild.data === '') {
+  //       parser.ast.html.children.pop()
+  //     } else {
+  //       parser.ast.html.end -= length - lastChild.data.length
+  //       break
+  //     }
+  //   }
 
   return parser.ast
 }

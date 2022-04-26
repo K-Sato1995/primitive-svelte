@@ -6,6 +6,7 @@ Todos
 */
 
 import parse from './parse/index.js'
+import generate from './generate/index.js'
 
 const compile = (template) => {
   /*
@@ -15,6 +16,7 @@ const compile = (template) => {
     return code
     */
   const ast = parse(template)
+  const code = generate(ast, template)
 }
 
 const template = `
