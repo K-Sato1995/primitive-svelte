@@ -1,4 +1,5 @@
 import readTag from './readTag.js'
+import readMustache from './readMustache.js'
 
 class Parser {
   constructor(template) {
@@ -127,7 +128,7 @@ const fragment = (parser) => {
 
   if (parser.match('{{')) {
     // return mustache;
-    return parser.m
+    return readMustache(parser)
   }
 
   return parser.readText
