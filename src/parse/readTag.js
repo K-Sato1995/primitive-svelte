@@ -1,18 +1,22 @@
 import { trimStart, trimEnd } from '../utils/index.js';
+import readScript from './readScript.js';
 const validTagName = /^[a-zA-Z]{1,}:?[a-zA-Z0-9\-]*/;
-const voidElementNames = /^(?:area|base|br|col|command|doctype|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)$/i;
+const voidElementNames =
+  /^(?:area|base|br|col|command|doctype|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)$/i;
 
-// const specialTags = {
-// 	script: {
-// 		read: readScript,
-// 		property: 'js'
-// 	},
+const specialTags = {
+  script: {
+    read: readScript,
+    property: 'js',
+  },
 
-// 	style: {
-// 		read: readStyle,
-// 		property: 'css'
-// 	}
-// };
+  style: {
+    read: () => {
+      throw new Error('Style tag is not supported');
+    },
+    property: 'css',
+  },
+};
 
 const readTag = (parser) => {
   // From one letter after the corrent position
@@ -58,6 +62,19 @@ const readTag = (parser) => {
 
   parser.allowWhitespace();
 
+  if (tagName in specialTags) {
+    const special = specialTags[tagName];
+
+    if (parser[special.id]) {
+      parser.idx = start;
+      throw new Error(`You can only have one <${tagName}> tag per component`);
+    }
+
+    parser.eat('>');
+    parser[special.property] = special.read(parser, start, attributes);
+    return;
+  }
+
   const element = {
     start,
     end: null,
@@ -71,7 +88,6 @@ const readTag = (parser) => {
 
   const selfClosing = parser.eat('/') || voidElementNames.test(tagName);
 
-  // const value = parser.eat( '=' ) ? readAttributeValue( parser ) : true;
   parser.eat('>');
 
   if (selfClosing) {
@@ -103,6 +119,8 @@ const readAttribute = (parser) => {
   // return if there is no attribute
   if (!name) return null;
 
+  parser.allowWhitespace();
+
   // Todo: handleEventHandler
   if (/^bind:/.test(name)) {
     // trim "="
@@ -110,6 +128,8 @@ const readAttribute = (parser) => {
     // name.slice(5) = value
     return readBind(parser, start, name.slice(5));
   }
+
+  throw new Error(`Expected valid property name`);
 };
 
 const readBind = (parser, start, name) => {

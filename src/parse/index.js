@@ -75,6 +75,10 @@ class Parser {
     this.idx++;
   };
 
+  remaining = () => {
+    return this.template.slice(this.idx);
+  };
+
   allowWhitespace() {
     while (
       this.idx < this.template.length &&
@@ -113,6 +117,7 @@ const parse = (template) => {
   while (parser.idx < parser.template.length) {
     state = state(parser) || fragment;
   }
+
 };
 
 const fragment = (parser) => {
